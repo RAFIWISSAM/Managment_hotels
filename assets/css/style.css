@@ -1,0 +1,31 @@
+/* Style général */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Style de la navigation */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Style du footer */
+footer {
+    margin-top: auto;
+}
+
+/* Styles responsives */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
