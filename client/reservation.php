@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/config.php';
+require_once '../database/functions.php';
 include '../includes/navbar.php';
 
 // Récupération de l'ID de l'hôtel
@@ -75,8 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':date_depart', $date_depart);
 
             if ($stmt->execute()) {
-                // Redirection vers la page de mes réservations après une réservation réussie
-                header("Location: ./my_reservations.php");
+                // Récupérer le montant total de la réservation
+                $montant_total = calculerMontantReservation($id_chambre, $date_arrivee, $date_depart); // Assurez-vous que cette fonction est définie
+
+                // Redirection vers la page de paiement
+                header("Location: ./payment.php?amount=" . $montant_total . "&id_reservation=" . $conn->lastInsertId());
                 exit();
             } else {
                 $errors[] = "Erreur lors de la réservation.";

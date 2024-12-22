@@ -29,6 +29,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 <li class="nav-item"><a class="nav-link" href="manage_rooms.php">Gérer les Chambres</a></li>
                 <li class="nav-item"><a class="nav-link" href="manage_reservations.php">Gérer les Réservations</a></li>
                 <li class="nav-item"><a class="nav-link" href="manage_users.php">Gérer les Utilisateurs</a></li>
+                <li class="nav-item"><a class="nav-link" href="reports.php">Rapports</a></li>
             </ul>
         </nav>
         <!-- Contenu dynamique ici -->

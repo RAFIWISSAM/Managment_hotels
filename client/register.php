@@ -7,13 +7,16 @@ $errors = [];
 // Vérification de la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = $_POST['nom'] ?? '';
+    $prenom = $_POST['prenom'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? '';
 
     // Validation des données
     if (empty($nom)) {
         $errors[] = 'Le nom est requis.';
+    }
+    if (empty($prenom)) {
+        $errors[] = 'Le prénom est requis.';
     }
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "L'email est invalide.";
@@ -21,9 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($password)) {
         $errors[] = 'Le mot de passe est requis.';
     }
-    if (empty($role)) {
-        $errors[] = 'Le rôle est requis.';
-    }
+    
 
     // Si pas d'erreurs, enregistrement dans la base de données
     if (empty($errors)) {
@@ -35,11 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
             // Insertion dans la base de données
-            $stmt = $conn->prepare("INSERT INTO clients (nom, email, mot_de_passe, role) VALUES (:nom, :email, :mot_de_passe, :role)");
+            $stmt = $conn->prepare("INSERT INTO clients (nom, prenom, email, mot_de_passe) VALUES (:nom, :prenom, :email, :mot_de_passe)");
             $stmt->bindParam(':nom', $nom);
+            $stmt->bindParam(':prenom', $prenom);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':mot_de_passe', $hashedPassword);
-            $stmt->bindParam(':role', $role);
+            
 
             if ($stmt->execute()) {
                 // Redirection vers la page de connexion après une inscription réussie
@@ -80,6 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" class="form-control" id="nom" name="nom" required>
             </div>
             <div class="mb-3">
+                <label for="prenom" class="form-label">Prénom</label>
+                <input type="text" class="form-control" id="prenom" name="prenom" required>
+            </div>
+            <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
@@ -87,13 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password" class="form-label">Mot de passe</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <div class="mb-3">
-                <label for="role" class="form-label">Rôle</label>
-                <select class="form-select" id="role" name="role" required>
-                    <option value="client">Client</option>
-                    <option value="admin">Administrateur</option>
-                </select>
-            </div>
+            
             <button type="submit" class="btn btn-primary">S'inscrire</button>
             <a href="login.php" class="btn btn-link">Déjà inscrit? Connexion</a>
         </form>
