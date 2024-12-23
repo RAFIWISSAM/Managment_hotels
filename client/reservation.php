@@ -21,7 +21,7 @@ if ($id_hotel) {
         $stmt->bindParam(':id_hotel', $id_hotel);
         $stmt->execute();
         $hotel = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         // Récupération des chambres disponibles pour l'hôtel
         $stmt = $conn->prepare("SELECT * FROM chambres WHERE id_hotel = :id_hotel AND disponibilite = TRUE");
         $stmt->bindParam(':id_hotel', $id_hotel);
@@ -35,11 +35,11 @@ if ($id_hotel) {
 // Vérification de la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupération des données du formulaire
-    $id_chambre = $_POST['id_chambre'] ?? null; // Récupérer l'ID de la chambre sélectionnée
+    $id_chambre = $_POST['id_chambre'] ?? null;
     $nom = $_POST['nom'] ?? '';
     $email = $_POST['email'] ?? '';
     $date_arrivee = $_POST['date_arrivee'] ?? '';
-    $date_depart = $_POST['date_depart'] ?? ''; 
+    $date_depart = $_POST['date_depart'] ?? '';
 
     // Validation des données
     if (empty($nom)) {
@@ -49,44 +49,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "L'email est invalide.";
     }
     if (empty($date_arrivee)) {
-        $errors[] = 'La date d arrivée est requise.';
+        $errors[] = 'La date d\'arrivée est requise.';
     }
     if (empty($date_depart)) {
         $errors[] = 'La date de départ est requise.';
     }
 
     // Vérification de la disponibilité de la chambre
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM reservations WHERE id_chambre = :id_chambre AND (date_arrivee < :date_depart AND date_depart > :date_arrivee)");
-    $stmt->bindParam(':id_chambre', $id_chambre);
-    $stmt->bindParam(':date_arrivee', $date_arrivee);
-    $stmt->bindParam(':date_depart', $date_depart);
-    $stmt->execute();
-    $count = $stmt->fetchColumn();
+    if (!$errors) {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM reservations WHERE id_chambre = :id_chambre AND (date_arrivee < :date_depart AND date_depart > :date_arrivee)");
+        $stmt->bindParam(':id_chambre', $id_chambre);
+        $stmt->bindParam(':date_arrivee', $date_arrivee);
+        $stmt->bindParam(':date_depart', $date_depart);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
 
-    if ($count > 0) {
-        $errors[] = "Chambre non disponible pour les dates sélectionnées.";
-    } else {
-        // Si pas d'erreurs, enregistrement de la réservation
-        try {
-            $id_client = 1; // Placeholder pour l'ID du client
-            $stmt = $conn->prepare("INSERT INTO reservations (id_client, id_chambre, date_arrivee, date_depart) VALUES (:id_client, :id_chambre, :date_arrivee, :date_depart)");
-            $stmt->bindParam(':id_client', $id_client);
-            $stmt->bindParam(':id_chambre', $id_chambre);
-            $stmt->bindParam(':date_arrivee', $date_arrivee);
-            $stmt->bindParam(':date_depart', $date_depart);
-
-            if ($stmt->execute()) {
-                // Récupérer le montant total de la réservation
-                $montant_total = calculerMontantReservation($id_chambre, $date_arrivee, $date_depart); // Assurez-vous que cette fonction est définie
-
-                // Redirection vers la page de paiement
-                header("Location: ./payment.php?amount=" . $montant_total . "&id_reservation=" . $conn->lastInsertId());
-                exit();
-            } else {
-                $errors[] = "Erreur lors de la réservation.";
+        if ($count > 0) {
+            $errors[] = "Chambre non disponible pour les dates sélectionnées.";
+        } else {
+            // Si pas d'erreurs, enregistrement de la réservation
+            try {
+                $id_client = 1; // Placeholder pour l'ID du client
+            
+                // Calculate the total price based on the room's price and the number of nights
+                $stmt = $conn->prepare("SELECT prix FROM chambres WHERE id_chambre = :id_chambre");
+                $stmt->bindParam(':id_chambre', $id_chambre);
+                $stmt->execute();
+                $chambre = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!$chambre) {
+                    throw new Exception("Chambre introuvable.");
+                }
+            
+                $prix_par_nuit = $chambre['prix'];
+                $date1 = new DateTime($date_arrivee);
+                $date2 = new DateTime($date_depart);
+                $nb_nuits = $date1->diff($date2)->days;
+                $prix_total = $prix_par_nuit * $nb_nuits;
+            
+                // Insert reservation with prix_total
+                $stmt = $conn->prepare(
+                    "INSERT INTO reservations (id_client, id_chambre, date_arrivee, date_depart, prix_total) 
+                    VALUES (:id_client, :id_chambre, :date_arrivee, :date_depart, :prix_total)"
+                );
+                $stmt->bindParam(':id_client', $id_client);
+                $stmt->bindParam(':id_chambre', $id_chambre);
+                $stmt->bindParam(':date_arrivee', $date_arrivee);
+                $stmt->bindParam(':date_depart', $date_depart);
+                $stmt->bindParam(':prix_total', $prix_total);
+            
+                if ($stmt->execute()) {
+                    // Redirect to payment page
+                    header("Location: ./payment.php?amount=" . $prix_total . "&id_reservation=" . $conn->lastInsertId());
+                    exit();
+                } else {
+                    $errors[] = "Erreur lors de la réservation.";
+                }
+            } catch (PDOException $e) {
+                $errors[] = "Erreur de connexion : " . $e->getMessage();
             }
-        } catch (PDOException $e) {
-            $errors[] = "Erreur de connexion : " . $e->getMessage();
+            
         }
     }
 }
@@ -101,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container mt-5">
-        <h2>Réservation pour <?php echo htmlspecialchars($hotel['nom_hotel']); ?></h2>
+        <h2>Réservation pour <?php echo htmlspecialchars($hotel['nom_hotel'] ?? ''); ?></h2>
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
                 <ul>
@@ -140,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Réserver</button>
-            
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
