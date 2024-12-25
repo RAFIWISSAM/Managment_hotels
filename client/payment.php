@@ -12,6 +12,7 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement</title>
+    <link href="../assets/css/style.css" rel="stylesheet">
     <script src="https://www.paypal.com/sdk/js?client-id=AQU2yQMc033W0otcGH85OYgloKX-2X9uFnkNtNXCne_BPTto1m57W23S7EpurK0-SWZZ2Ze0aibHI57P&currency=EUR"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">

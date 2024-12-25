@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
+    <link href="assets/css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php">Connexion</a>
+                        <a class="nav-link" href="client/register.php">Inscription</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -121,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-primary">Se connecter</button>
-        <a href="register.php" class="btn btn-link">Pas encore inscrit? Inscription</a>
+        <a href="client/register.php" class="btn btn-link">Pas encore inscrit? Inscription</a>
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

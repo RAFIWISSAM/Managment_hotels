@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $date1 = new DateTime($date_arrivee);
                 $date2 = new DateTime($date_depart);
                 $nb_nuits = $date1->diff($date2)->days;
-                $prix_total = $prix_par_nuit * $nb_nuits;
+                $prix_total = calculerMontantReservation($id_chambre, $date_arrivee, $date_depart);
             
                 // Insert reservation with prix_total
                 $stmt = $conn->prepare(
@@ -113,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation</title>
+    <link href="../assets/css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
