@@ -12,9 +12,15 @@ define('SITE_URL', 'http://localhost/hotel_management_system');
 // Configuration des sessions
 session_start();
 
+try {
+    $conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erreur de connexion à la base de données : " . $e->getMessage());
+}
+
 // Fonction pour gérer les erreurs
 function handleError($error) {
-    // À développer plus tard
     echo "Une erreur est survenue : " . $error;
 }
 

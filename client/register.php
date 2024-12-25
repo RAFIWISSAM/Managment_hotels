@@ -1,6 +1,5 @@
 <?php
 require_once '../includes/config.php';
-include '../includes/navbar.php';
 // Initialisation des variables
 $errors = [];
 
@@ -45,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 // Redirection vers la page de connexion après une inscription réussie
-                header("Location: login.php");
+                header("Location: ../index.php");
                 exit();
             } else {
                 $errors[] = "Erreur lors de l'inscription.";
@@ -65,6 +64,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">HotelSystem</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Mes réservations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Rate Us</a>
+                    </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.php">Connexion</a>
+                        </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container mt-5">
         <h2>Inscription</h2>
         <?php if (!empty($errors)): ?>
@@ -95,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <button type="submit" class="btn btn-primary">S'inscrire</button>
-            <a href="login.php" class="btn btn-link">Déjà inscrit? Connexion</a>
+            <a href="../index.php" class="btn btn-link">Déjà inscrit? Connexion</a>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

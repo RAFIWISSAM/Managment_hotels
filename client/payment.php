@@ -1,6 +1,7 @@
 <?php
 // payment.php
 require_once '../includes/config.php';
+include '../includes/navbar.php';
 
 $amount = $_GET['amount'] ?? 0; // Retrieve the amount to be paid
 $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
@@ -14,11 +15,12 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     <script src="https://www.paypal.com/sdk/js?client-id=AQU2yQMc033W0otcGH85OYgloKX-2X9uFnkNtNXCne_BPTto1m57W23S7EpurK0-SWZZ2Ze0aibHI57P&currency=EUR"></script>
     <!-- Replace YOUR_PAYPAL_CLIENT_ID with your actual PayPal client ID -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <h2>Paiement pour la réservation</h2>
-        <p>Montant à payer: <strong><?php echo htmlspecialchars($amount); ?> €</strong></p>
+        <p>Montant à payer: <strong><?php echo htmlspecialchars($amount); ?>£</strong></p>
         <p>Réservation ID: <strong><?php echo htmlspecialchars($id_reservation); ?></strong></p>
 
         <!-- PayPal Button -->
@@ -70,5 +72,7 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include '../includes/footer.php'; ?>
+    
 </body>
 </html>

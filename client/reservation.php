@@ -17,13 +17,8 @@ if ($id_hotel) {
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Récupération des détails de l'hôtel
-        $stmt = $conn->prepare("SELECT * FROM hotels WHERE id_hotel = :id_hotel");
-        $stmt->bindParam(':id_hotel', $id_hotel);
-        $stmt->execute();
-        $hotel = $stmt->fetch(PDO::FETCH_ASSOC);
-
         // Récupération des chambres disponibles pour l'hôtel
-        $stmt = $conn->prepare("SELECT * FROM chambres WHERE id_hotel = :id_hotel AND disponibilite = TRUE");
+        $stmt = $conn->prepare("SELECT DISTINCT type_chambre, prix, id_chambre FROM chambres WHERE id_hotel = :id_hotel AND disponibilite = TRUE GROUP BY type_chambre ");
         $stmt->bindParam(':id_hotel', $id_hotel);
         $stmt->execute();
         $chambres = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -119,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -149,17 +145,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="date_depart" class="form-label">Date de départ</label>
                 <input type="date" class="form-control" id="date_depart" name="date_depart" required>
             </div>
-            <div class="mb-3">
+                <div class="mb-3">
                 <label for="id_chambre" class="form-label">Choisir une Chambre</label>
                 <select class="form-select" id="id_chambre" name="id_chambre" required>
                     <option value="">Sélectionnez une chambre</option>
                     <?php foreach ($chambres as $chambre): ?>
-                        <option value="<?php echo htmlspecialchars($chambre['id_chambre']); ?>">
-                            <?php echo htmlspecialchars($chambre['type_chambre']); ?> - <?php echo htmlspecialchars($chambre['prix']); ?> €
-                        </option>
+                    <option value="<?php echo htmlspecialchars($chambre['id_chambre']); ?>">
+                        <?php echo htmlspecialchars($chambre['type_chambre']); ?> - <?php echo htmlspecialchars($chambre['prix']); ?> €
+                    </option>
                     <?php endforeach; ?>
                 </select>
-            </div>
+                </div>
             <button type="submit" class="btn btn-primary">Réserver</button>
         </form>
     </div>

@@ -1,10 +1,11 @@
 <?php
 
 require_once '../includes/config.php';
+include '../includes/navbar.php';
 
 // Vérifiez si l'utilisateur est connecté et a le rôle d'administrateur
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../client/login.php");
+    header("Location: ../client/index.php");
     exit();
 }
 
@@ -19,6 +20,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panneau d'Administration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -35,5 +37,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <!-- Contenu dynamique ici -->
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>

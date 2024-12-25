@@ -33,14 +33,32 @@ function processPayment($amount, $currency, $token) {
 // Traitement du formulaire de paiement
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amount = $_POST['amount'] ?? 0;
-    $currency = 'EUR'; // Vous pouvez ajuster la devise si nécessaire
+    $currency = 'DH'; // Vous pouvez ajuster la devise si nécessaire
     $token = $_POST['card_token'] ?? '';
+    $id_reservation = $_POST['id_reservation'] ?? 0; // Récupérer l'ID de la réservation
 
     try {
         $paymentResponse = processPayment($amount, $currency, $token);
-        // Gérer la réponse du paiement ici (par exemple, enregistrer le statut du paiement dans la base de données)
-        // Redirection ou message de succès
-        echo "Paiement réussi: " . htmlspecialchars($paymentResponse['message']);
+        
+        // Si le paiement est réussi, insérer les données dans la table paiements
+        if ($paymentResponse['success']) { // Assurez-vous que la réponse contient un indicateur de succès
+            $stmt = $conn->prepare("INSERT INTO paiements (id_reservation, montant, methode_paiement, statut, reference_transaction) VALUES (:id_reservation, :montant, :methode_paiement, :statut, :reference_transaction)");
+            $stmt->bindParam(':id_reservation', $id_reservation);
+            $stmt->bindParam(':montant', $amount);
+            $stmt->bindParam(':methode_paiement', $paymentResponse['method']); // Assurez-vous que cette clé existe dans la réponse
+            $stmt->bindParam(':statut', $paymentResponse['status']); // Assurez-vous que cette clé existe dans la réponse
+            $stmt->bindParam(':reference_transaction', $paymentResponse['transaction_id']); // Assurez-vous que cette clé existe dans la réponse
+            
+            if ($stmt->execute()) {
+                // Redirection vers la page des réservations
+                header("Location: my_reservations.php");
+                exit();
+            } else {
+                throw new Exception("Erreur lors de l'enregistrement du paiement.");
+            }
+        } else {
+            throw new Exception("Erreur lors du traitement du paiement.");
+        }
     } catch (Exception $e) {
         echo "Erreur: " . htmlspecialchars($e->getMessage());
     }
