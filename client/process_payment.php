@@ -1,66 +1,74 @@
 <?php
-// process_payment.php
 require_once '../includes/config.php';
-require_once 'payment_config.php';
 
-function processPayment($amount, $currency, $token) {
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, PAYMENT_API_URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-        'amount' => $amount,
-        'currency' => $currency,
-        'token' => $token,
-    ]));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . PAYMENT_API_KEY,
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($httpCode == 200) {
-        return json_decode($response, true); // Retourne le résultat du paiement
-    } else {
-        throw new Exception("Erreur de paiement: " . $response);
-    }
-}
-
-// Traitement du formulaire de paiement
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $amount = $_POST['amount'] ?? 0;
-    $currency = 'DH'; // Vous pouvez ajuster la devise si nécessaire
-    $token = $_POST['card_token'] ?? '';
-    $id_reservation = $_POST['id_reservation'] ?? 0; // Récupérer l'ID de la réservation
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    $orderID = $input['orderID'] ?? null;
+    $id_reservation = $input['id_reservation'] ?? null;
+
+    if (!$orderID || !$id_reservation) {
+        echo json_encode(['success' => false, 'message' => 'Données manquantes']);
+        exit();
+    }
 
     try {
-        $paymentResponse = processPayment($amount, $currency, $token);
-        
-        // Si le paiement est réussi, insérer les données dans la table paiements
-        if ($paymentResponse['success']) { // Assurez-vous que la réponse contient un indicateur de succès
-            $stmt = $conn->prepare("INSERT INTO paiements (id_reservation, montant, methode_paiement, statut, reference_transaction) VALUES (:id_reservation, :montant, :methode_paiement, :statut, :reference_transaction)");
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api-m.sandbox.paypal.com/v2/checkout/orders/$orderID");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . getPaypalAccessToken()
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            throw new Exception("Erreur lors de la récupération des détails du paiement PayPal.");
+        }
+
+        $paymentDetails = json_decode($response, true);
+
+        if ($paymentDetails['status'] === 'COMPLETED') {
+            $montant = $paymentDetails['purchase_units'][0]['amount']['value'];
+            $reference_transaction = $paymentDetails['id'];
+
+            $stmt = $conn->prepare("INSERT INTO paiements (id_reservation, montant, methode_paiement, statut, reference_transaction) VALUES (:id_reservation, :montant, 'PayPal', 'COMPLETED', :reference_transaction)");
             $stmt->bindParam(':id_reservation', $id_reservation);
-            $stmt->bindParam(':montant', $amount);
-            $stmt->bindParam(':methode_paiement', $paymentResponse['method']); // Assurez-vous que cette clé existe dans la réponse
-            $stmt->bindParam(':statut', $paymentResponse['status']); // Assurez-vous que cette clé existe dans la réponse
-            $stmt->bindParam(':reference_transaction', $paymentResponse['transaction_id']); // Assurez-vous que cette clé existe dans la réponse
-            
+            $stmt->bindParam(':montant', $montant);
+            $stmt->bindParam(':reference_transaction', $reference_transaction);
+
             if ($stmt->execute()) {
-                // Redirection vers la page des réservations
-                header("Location: my_reservations.php");
+                echo json_encode(['success' => true]);
                 exit();
             } else {
                 throw new Exception("Erreur lors de l'enregistrement du paiement.");
             }
         } else {
-            throw new Exception("Erreur lors du traitement du paiement.");
+            throw new Exception("Paiement non complété.");
         }
     } catch (Exception $e) {
-        echo "Erreur: " . htmlspecialchars($e->getMessage());
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
+}
+
+function getPaypalAccessToken() {
+    $clientId = 'AQU2yQMc033W0otcGH85OYgloKX-2X9uFnkNtNXCne_BPTto1m57W23S7EpurK0-SWZZ2Ze0aibHI57P';
+    $clientSecret = 'EMZZC4kTjCsNsIogYsCSIW5Vf1JdASpa-m5PSAY5JsUHX5DXlJnyfQCJX9h4s2BNVIJDzI0AZ-s2nXjR';
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://api-m.sandbox.paypal.com/v1/oauth2/token");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, "$clientId:$clientSecret");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $tokenInfo = json_decode($response, true);
+    return $tokenInfo['access_token'] ?? null;
 }
 ?>

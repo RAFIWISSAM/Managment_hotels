@@ -13,7 +13,6 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement</title>
     <script src="https://www.paypal.com/sdk/js?client-id=AQU2yQMc033W0otcGH85OYgloKX-2X9uFnkNtNXCne_BPTto1m57W23S7EpurK0-SWZZ2Ze0aibHI57P&currency=EUR"></script>
-    <!-- Replace YOUR_PAYPAL_CLIENT_ID with your actual PayPal client ID -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -30,19 +29,16 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     <script>
         paypal.Buttons({
             createOrder: function(data, actions) {
-                // Create the order with PayPal
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: '<?php echo $amount; ?>' // Use the PHP amount variable
+                            value: '<?php echo $amount; ?>'
                         }
                     }]
                 });
             },
             onApprove: function(data, actions) {
-                // Capture the funds
                 return actions.order.capture().then(function(details) {
-                    // Send payment details to the server
                     fetch('process_payment.php', {
                         method: 'POST',
                         headers: {
@@ -57,7 +53,7 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
                     .then(data => {
                         if (data.success) {
                             alert('Paiement réussi ! Merci ' + details.payer.name.given_name);
-                            window.location.href = "confirmation.php?id_reservation=<?php echo $id_reservation; ?>";
+                            window.location.href = "my_reservations.php";
                         } else {
                             alert('Une erreur s\'est produite lors du traitement du paiement.');
                         }
@@ -73,6 +69,7 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include '../includes/footer.php'; ?>
-    
 </body>
 </html>
+
+<?php

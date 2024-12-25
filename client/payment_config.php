@@ -1,7 +1,8 @@
 <?php
 // payment_config.php
 
-define('PAYMENT_API_URL', 'https://api.paymentgateway.com/v1/payments'); // URL de l'API de paiement
-define('PAYMENT_API_KEY', 'your_api_key_here'); // Clé API pour l'authentification
-define('PAYMENT_API_SECRET', 'your_api_secret_here'); // Secret API pour l'authentification
+// URL de l'API de paiement PayPal REST
+define('PAYPAL_API_URL', 'https://api-m.sandbox.paypal.com'); // Utilisez l'environnement sandbox pour les tests
+define('PAYPAL_CLIENT_ID', 'AQU2yQMc033W0otcGH85OYgloKX-2X9uFnkNtNXCne_BPTto1m57W23S7EpurK0-SWZZ2Ze0aibHI57P'); // Remplacez par votre Client ID PayPal
+define('PAYPAL_CLIENT_SECRET', 'EMZZC4kTjCsNsIogYsCSIW5Vf1JdASpa-m5PSAY5JsUHX5DXlJnyfQCJX9h4s2BNVIJDzI0AZ-s2nXjR'); // Remplacez par votre Secret
 ?>

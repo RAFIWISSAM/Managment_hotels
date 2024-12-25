@@ -69,10 +69,10 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <a class="nav-link" href="acceuil.php">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="client/my_reservations.php">Mes réservations</a>
+                    <a class="nav-link" href="#">Mes réservations</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="client/rating.php">Rate Us</a>
+                    <a class="nav-link" href="#">Rate Us</a>
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
@@ -92,8 +92,8 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </div>
     </div>
-</nav>
-    </header>
+</nav> 
+</header>
 
     <!-- Formulaire de recherche d'hôtels -->
     <div class="container mt-4">
