@@ -43,7 +43,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Système de Réservation d'Hôtels</title>
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/acceuil.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -58,7 +58,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 <!-- En-tête -->
 <header>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="acceuil.php">HotelSystem</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -70,15 +70,15 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <a class="nav-link" href="acceuil.php">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mes réservations</a>
+                    <a class="nav-link" href="client/my_reservations.php">Mes réservations</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Rate Us</a>
+                    <a class="nav-link" href="client/rating.php">Rate Us</a>
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i> <!-- Icone de profil -->
+                        <i class="fa-solid fa-user"></i> <!-- Icone de profil -->
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#"><?php echo htmlspecialchars($_SESSION['user']['nom']); ?></a></li>
@@ -87,7 +87,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php">Connexion</a>
+                        <a class="nav-link" href="client/login.php">Connexion</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -97,8 +97,8 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </header>
 
     <!-- Formulaire de recherche d'hôtels -->
-    <div class="container mt-4">
-            <h1>Bienvenue sur notre système de réservation d'hôtels</h1>
+    <div class="center-container">
+            <h1>Recherchez et Réservez des Hôtels</h1>
             <!-- Formulaire de recherche d'hôtels -->
             <div class="search-form mt-4">
                 <form action="" method="POST" class="row g-3">
@@ -108,11 +108,11 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-md-3">
                         <label for="checkin" class="form-label">Date d'arrivée</label>
-                        <input type="date" class="form-control" id="checkin" name="checkin" required>
+                        <input type="date" class="form-control" id="checkin" name="checkin" >
                     </div>
                     <div class="col-md-3">
                         <label for="checkout" class="form-label">Date de départ</label>
-                        <input type="date" class="form-control" id="checkout" name="checkout" required>
+                        <input type="date" class="form-control" id="checkout" name="checkout" >
                     </div>
                     <div class="col-md-2 align-self-end">
                         <button type="submit" class="btn btn-primary w-100">Rechercher</button>
@@ -145,7 +145,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             <?php else: ?>
                 <p>Aucun hôtel trouvé pour votre recherche.</p>
-                <a href="index.php" class="btn btn-primary">Retour à l'accueil</a>
+                <a href="client/login.php" class="btn btn-primary">Retour à l'accueil</a>
             <?php endif; ?>
         </div>
     </div>
@@ -157,7 +157,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include 'includes/footer.php'; ?>
+    
 
 </body>
 </html>

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 // Redirection vers la page de connexion après une inscription réussie
-                header("Location: ../index.php");
+                header("Location: login.php");
                 exit();
             } else {
                 $errors[] = "Erreur lors de l'inscription.";
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
-    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/register.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Accueil</a>
+                        <a class="nav-link" href="../index.php">Accueil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mes réservations</a>
@@ -84,14 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </li>
                     
                         <li class="nav-item">
-                            <a class="nav-link" href="../index.php">Connexion</a>
+                            <a class="nav-link" href="login.php">Connexion</a>
                         </li>
                     
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container mt-5">
+<div class="center-container">
+    <div class="form-container">
         <h2>Inscription</h2>
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
@@ -121,9 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <button type="submit" class="btn btn-primary">S'inscrire</button>
-            <a href="../index.php" class="btn btn-link">Déjà inscrit? Connexion</a>
+            <span class="custom-link"> Déjà inscrit?</span><a href="login.php" class="custom-link">Connexion</a>
         </form>
     </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include '../includes/footer.php'; ?>
 </body>

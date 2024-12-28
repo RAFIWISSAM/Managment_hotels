@@ -69,7 +69,9 @@ $id_reservation = $_GET['id_reservation'] ?? 0; // Retrieve the reservation ID
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include '../includes/footer.php'; ?>
+    <footer class="bg-dark text-white mt-auto p-4 text-center fixed-bottom" style="width: 100%; bottom: 0;">
+    <p>&copy; 2024 HotelSystem. Tous droits réservés.</p>
+</footer>
 </body>
 </html>
 

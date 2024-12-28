@@ -1,0 +1,112 @@
+body {
+    background: url('https://www.malagacar.com/fr/blog/wp-content/uploads/2023/08/cabane-hotel-marbella.jpg') no-repeat center center fixed;
+    background-size: cover;
+    
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+    margin: 0;
+    min-height: 100vh;
+    
+    
+}
+
+
+
+
+.btn-primary {
+    background-color: #37a5af !important; /* Blanc cassé */
+    border-color: #37a5af !important;
+    
+    transition: transform 0.3s ease-in-out;
+    
+}
+
+.btn-primary:hover {
+    transform: scale(1.1) !important;
+    background-color: #44c4cf !important; /* Couleur légèrement plus foncée pour l'effet de survol */
+    border-color: #7af4ff !important;
+}
+
+
+.center-container {
+     /* Fond semi-transparent pour améliorer la lisibilité */
+    
+    border-radius: 20px;
+    padding: 30px;
+    padding-top: 56px;
+    color: white;
+    max-width: 1300px; /* Largeur maximale pour limiter l'étirement */
+    margin: 20px auto; /* Centre horizontalement */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ajout d'une ombre */
+    margin-top: 10px; 
+    
+}
+.card img {
+    border-radius: 20px;
+    padding: 10px; /* Ajout d'un espace autour de l'image */
+}
+
+.card{
+    border-radius: 30px;
+    color: #5D4632;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 1);
+    transition: transform 0.3s ease-in-out;
+
+}
+.card:hover {
+    transform: scale(1.05) !important;
+    
+}
+
+
+h1 {
+    color: #7af4ff;
+    color: beige;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .center-container {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    .btn-primary {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+
+    .form-control {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+}
+@media (max-width: 480px) {
+    .center-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .btn-primary {
+        font-size: 0.8em;
+        padding: 8px 16px;
+    }
+
+    .form-control {
+        font-size: 0.8em;
+        padding: 6px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+}
+

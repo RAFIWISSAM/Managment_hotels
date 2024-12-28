@@ -1,66 +1,14 @@
 <?php
-require_once 'includes/config.php';
-
-// Initialisation des variables
-$errors = [];
-
-
-// Vérification de la soumission du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    // Validation des données
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "L'email est invalide.";
-    }
-    if (empty($password)) {
-        $errors[] = 'Le mot de passe est requis.';
-    }
-
-    // Si pas d'erreurs, vérification dans la base de données
-    if (empty($errors)) {
-        try {
-            $conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Vérification de l'utilisateur
-            $stmt = $conn->prepare("SELECT id_client, mot_de_passe, role FROM clients WHERE email = :email");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user && password_verify($password, $user['mot_de_passe'])) {
-                // Démarrer une session utilisateur
-                $_SESSION['user'] = [
-                    'id' => $user['id_client'],
-                    'role' => $user['role'],
-                    'nom' => $email // Vous pouvez remplacer par le nom réel si disponible
-                ];
-
-                // Rediriger vers la page appropriée en fonction du rôle
-                if ($user['role'] === 'admin') {
-                    header("Location: admin_dashboard.php");
-                } else {
-                    header("Location: acceuil.php");
-                }
-                exit();
-            } else {
-                $errors[] = "Email ou mot de passe incorrect.";
-            }
-        } catch (PDOException $e) {
-            $errors[] = "Erreur de connexion : " . $e->getMessage();
-        }
-    }
-}
+session_start(); // Assurez-vous de démarrer la session
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
-    <link href="assets/css/style.css" rel="stylesheet">
+    <title>Accueil</title>
+    <link href="assets/css/index.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -74,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Accueil</a>
+                    <a class="nav-link" href="index.php">Accueil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Mes réservations</a>
@@ -93,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="client/register.php">Inscription</a>
+                        <a class="nav-link" href="client/login.php">Connexion</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -101,30 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </nav>
 
-<div class="container mt-5">
-    <h2>Connexion</h2>
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?php echo htmlspecialchars($error); ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-    <form method="POST" action="">
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Se connecter</button>
-        <a href="client/register.php" class="btn btn-link">Pas encore inscrit? Inscription</a>
-    </form>
-</div>
+<main>
+    <div class="content-container text-center">
+        <h1>Bienvenue sur notre système de réservation des hôtels!</h1><br>
+        <p class="large-text">Nous sommes ravis de vous accueillir. Explorez nos options d'hébergement et faites votre réservation dès aujourd'hui!</p>
+        <p class="large-text">Que vous soyez ici pour un voyage d'affaires ou des vacances, nous avons tout ce qu'il vous faut.</p><br>
+        <a href="client/login.php" class="btn btn-primary">Commencer</a>
+    </div>
+</main>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php include 'includes/footer.php'; ?>
 </body>

@@ -1,0 +1,38 @@
+
+body{
+    background-image: url("https://www.malagacar.com/fr/blog/wp-content/uploads/2023/08/cabane-hotel-marbella.jpg");
+    background-size: cover;
+}
+
+.contenu {
+    
+    padding: 30px;
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent pour améliorer la lisibilité */
+    
+}
+h2{
+    color: beige;
+}
+
+
+
+.nav-tabs .nav-link.active {
+    background-color: #44c4cf;
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    color: #44c4cf;
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Ajout de la transition */
+}
+
+.nav-tabs .nav-link:hover {
+    transform: scale(1); /* Agrandissement */
+    background-color: #44c4cf; /* Changement de couleur de fond */
+    color: white; /* Couleur du texte */
+}
+
+
+

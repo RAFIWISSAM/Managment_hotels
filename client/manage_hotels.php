@@ -1,11 +1,10 @@
 <?php
 require_once '../includes/config.php';
-
-include '../includes/navbar.php';
+include '../includes_admin/navbar.php';
 
 // Vérifiez si l'utilisateur est connecté et a le rôle d'administrateur
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../index.php");
+if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
+    header("Location: login.php");
     exit();
 }
 
@@ -32,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update'])) {
 
     if ($stmt->execute()) {
         echo "Hôtel ajouté avec succès !";
+        
     } else {
         echo "Erreur lors de l'ajout de l'hôtel.";
     }
@@ -84,6 +84,13 @@ if (isset($_POST['update'])) {
 // Code pour supprimer un hôtel
 if (isset($_GET['delete'])) {
     $id_hotel = $_GET['delete'];
+
+    // Supprimer les chambres associées
+    $stmt = $conn->prepare("DELETE FROM chambres WHERE id_hotel = :id_hotel");
+    $stmt->bindParam(':id_hotel', $id_hotel);
+    $stmt->execute();
+
+    // Supprimer l'hôtel
     $stmt = $conn->prepare("DELETE FROM hotels WHERE id_hotel = :id_hotel");
     $stmt->bindParam(':id_hotel', $id_hotel);
 
@@ -103,139 +110,151 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gérer les Hôtels</title>
-    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/hotels.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+
     <div class="container mt-5">
         <h2>Gérer les Hôtels</h2>
-        <?php if (isset($_GET['edit'])): ?>
-            <form method="POST" action="">
-                <input type="hidden" name="id_hotel" value="<?php echo $hotel['id_hotel']; ?>">
-                <div class="mb-3">
-                    <label for="nom_hotel" class="form-label">Nom de l'Hôtel</label>
-                    <input type="text" class="form-control" id="nom_hotel" name="nom_hotel" value="<?php echo $hotel['nom_hotel']; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="adresse" class="form-label">Adresse</label>
-                    <input type="text" class="form-control" id="adresse" name="adresse" value="<?php echo $hotel['adresse']; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" required><?php echo $hotel['description']; ?></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<?php echo $hotel['email']; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="telephone" class="form-label">Téléphone</label>
-                    <input type="text" class="form-control" id="telephone" name="telephone" value="<?php echo $hotel['telephone']; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="site_web" class="form-label">Site Web</label>
-                    <input type="text" class="form-control" id="site_web" name="site_web" value="<?php echo $hotel['site_web']; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="id_ville" class="form-label">Ville</label>
-                    <select class="form-select" id="id_ville" name="id_ville" required>
-                        <option value="">Sélectionnez une ville</option>
-                        <option value="1" <?php if ($hotel['id_ville'] == 1) echo 'selected'; ?>>Marrakech</option>
-                        <option value="2" <?php if ($hotel['id_ville'] == 2) echo 'selected'; ?>>Casablanca</option>
-                        <option value="3" <?php if ($hotel['id_ville'] == 3) echo 'selected'; ?>>Fès</option>
-                        <option value="4" <?php if ($hotel['id_ville'] == 4) echo 'selected'; ?>>Agadir</option>
-                        <option value="5" <?php if ($hotel['id_ville'] == 5) echo 'selected'; ?>>Tanger</option>
-                        <option value="6" <?php if ($hotel['id_ville'] == 6) echo 'selected'; ?>>Essaouira</option>
-                        <option value="7" <?php if ($hotel['id_ville'] == 7) echo 'selected'; ?>>Rabat</option>
-                        <option value="8" <?php if ($hotel['id_ville'] == 8) echo 'selected'; ?>>Ouarzazate</option>
-                        <option value="9" <?php if ($hotel['id_ville'] == 9) echo 'selected'; ?>>Meknès</option>
-                        <option value="10" <?php if ($hotel['id_ville'] == 10) echo 'selected'; ?>>Chefchaouen</option>
-                        <!-- Ajoutez ici les options de ville -->
-                    </select>
-                </div>
-                <button type="submit" name="update" class="btn btn-primary">Modifier Hôtel</button>
-            </form>
-        <?php else: ?>
-            <form method="POST" action="">
-                <div class="mb-3">
-                    <label for="nom_hotel" class="form-label">Nom de l'Hôtel</label>
-                    <input type="text" class="form-control" id="nom_hotel" name="nom_hotel" required>
-                </div>
-                <div class="mb-3">
-                    <label for="adresse" class="form-label">Adresse</label>
-                    <input type="text" class="form-control" id="adresse" name="adresse" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="telephone" class="form-label">Téléphone</label>
-                    <input type="text" class="form-control" id="telephone" name="telephone" required>
-                </div>
-                <div class="mb-3">
-                    <label for="site_web" class="form-label">Site Web</label>
-                    <input type="text" class="form-control" id="site_web" name="site_web" required>
-                </div>
-                <div class="mb-3">
-                    <label for="id_ville" class="form-label">Ville</label>
-                    <select class="form-select" id="id_ville" name="id_ville" required>
-                        <option value="">Sélectionnez une ville</option>
-                        <option value="1">Marrakech</option>
-                        <option value="2">Casablanca</option>
-                        <option value="3">Fès</option>
-                        <option value="4">Agadir</option>
-                        <option value="5">Tanger</option>
-                        <option value="6">Essaouira</option>
-                        <option value="7">Rabat</option>
-                        <option value="8">Ouarzazate</option>
-                        <option value="9">Meknès</option>
-                        <option value="10">Chefchaouen</option>
-                        <!-- Ajoutez ici les options de ville -->
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Ajouter Hôtel</button>
-            </form>
-        <?php endif; ?>
-
-        <h3 class="mt-5">Liste des Hôtels</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Adresse</th>
-                    <th>Description</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Site Web</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($hotels as $hotel): ?>
+        <div class="add-hotel-btn">
+            <a href="#addHotelForm" class="btn btn-primary">Ajouter Hôtel</a>
+        </div>
+        <div class="table-container">
+            <h3>Liste des Hôtels</h3>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($hotel['id_hotel']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['nom_hotel']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['adresse']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['description']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['email']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['telephone']); ?></td>
-                        <td><?php echo htmlspecialchars($hotel['site_web']); ?></td>
-                        <td>
-                            <a href="manage_hotels.php?edit=<?php echo $hotel['id_hotel']; ?>" class="btn btn-warning">Modifier</a>
-                            <a href="manage_hotels.php?delete=<?php echo $hotel['id_hotel']; ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet hôtel ?');">Supprimer</a>
-                        </td>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Description</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Site Web</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($hotels as $hotel): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($hotel['id_hotel']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['nom_hotel']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['adresse']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['description']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['email']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['telephone']); ?></td>
+                            <td><?php echo htmlspecialchars($hotel['site_web']); ?></td>
+                            <td>
+                                <a href="manage_hotels.php?edit=<?php echo $hotel['id_hotel']; ?>#editHotelForm" class="btn btn-warning">Modifier</a>
+                                <a href="manage_hotels.php?delete=<?php echo $hotel['id_hotel']; ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet hôtel ?');">Supprimer</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <div id="editHotelForm" class="mt-5">
+            <?php if (isset($_GET['edit'])): ?>
+                <h3>Modifier un hôtel</h3>
+                <form method="POST" action="">
+                    <input type="hidden" name="id_hotel" value="<?php echo $hotel['id_hotel']; ?>">
+                    <div class="mb-3">
+                        <label for="nom_hotel" class="form-label">Nom de l'Hôtel</label>
+                        <input type="text" class="form-control" id="nom_hotel" name="nom_hotel" value="<?php echo $hotel['nom_hotel']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adresse" class="form-label">Adresse</label>
+                        <input type="text" class="form-control" id="adresse" name="adresse" value="<?php echo $hotel['adresse']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" required><?php echo $hotel['description']; ?></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $hotel['email']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" id="telephone" name="telephone" value="<?php echo $hotel['telephone']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="site_web" class="form-label">Site Web</label>
+                        <input type="text" class="form-control" id="site_web" name="site_web" value="<?php echo $hotel['site_web']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_ville" class="form-label">Ville</label>
+                        <select class="form-select" id="id_ville" name="id_ville" required>
+                            <option value="">Sélectionnez une ville</option>
+                            <option value="1" <?php if ($hotel['id_ville'] == 1) echo 'selected'; ?>>Marrakech</option>
+                            <option value="2" <?php if ($hotel['id_ville'] == 2) echo 'selected'; ?>>Casablanca</option>
+                            <option value="3" <?php if ($hotel['id_ville'] == 3) echo 'selected'; ?>>Fès</option>
+                            <option value="4" <?php if ($hotel['id_ville'] == 4) echo 'selected'; ?>>Agadir</option>
+                            <option value="5" <?php if ($hotel['id_ville'] == 5) echo 'selected'; ?>>Tanger</option>
+                            <option value="6" <?php if ($hotel['id_ville'] == 6) echo 'selected'; ?>>Essaouira</option>
+                            <option value="7" <?php if ($hotel['id_ville'] == 7) echo 'selected'; ?>>Rabat</option>
+                            <option value="8" <?php if ($hotel['id_ville'] == 8) echo 'selected'; ?>>Ouarzazate</option>
+                            <option value="9" <?php if ($hotel['id_ville'] == 9) echo 'selected'; ?>>Meknès</option>
+                            <option value="10" <?php if ($hotel['id_ville'] == 10) echo 'selected'; ?>>Chefchaouen</option>
+                            <!-- Ajoutez ici les options de ville -->
+                        </select>
+                    </div>
+                    <button type="submit" name="update" class="btn btn-primary">Modifier Hôtel</button>
+                </form>
+            <?php else: ?>
+                <h3>Ajouter un hôtel</h3>
+                <form id='addHotelForm' method="POST" action="">
+                    <div class="mb-3">
+                        <label for="nom_hotel" class="form-label">Nom de l'Hôtel</label>
+                        <input type="text" class="form-control" id="nom_hotel" name="nom_hotel" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adresse" class="form-label">Adresse</label>
+                        <input type="text" class="form-control" id="adresse" name="adresse" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" id="telephone" name="telephone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="site_web" class="form-label">Site Web</label>
+                        <input type="text" class="form-control" id="site_web" name="site_web" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_ville" class="form-label">Ville</label>
+                        <select class="form-select" id="id_ville" name="id_ville" required>
+                            <option value="">Sélectionnez une ville</option>
+                            <option value="1">Marrakech</option>
+                            <option value="2">Casablanca</option>
+                            <option value="3">Fès</option>
+                            <option value="4">Agadir</option>
+                            <option value="5">Tanger</option>
+                            <option value="6">Essaouira</option>
+                            <option value="7">Rabat</option>
+                            <option value="8">Ouarzazate</option>
+                            <option value="9">Meknès</option>
+                            <option value="10">Chefchaouen</option>
+                            <!-- Ajoutez ici les options de ville -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter Hôtel</button>
+                </form>
+            <?php endif; ?>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include '../includes/footer.php'; ?>
+    <footer class="bg-dark text-white mt-auto p-4 text-center fixed-bottom" style="width: 100%; bottom: 0;">
+    <p>&copy; 2024 HotelSystem. Tous droits réservés.</p>
+</footer>
 </body>
 </html>

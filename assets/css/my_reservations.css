@@ -1,0 +1,16 @@
+h2{
+    color: #44c4cf;
+    
+    margin-bottom: 20px;
+}
+.btn-danger{
+    background-color: #37a5af !important; /* Blanc cassé */
+    border-color: #7af4ff !important;
+    
+    transition: transform 0.3s ease-in-out;
+}
+.btn-danger:hover{
+    transform: scale(1.1) !important;
+    background-color: #44c4cf !important; /* Couleur légèrement plus foncée pour l'effet de survol */
+    border-color: #7af4ff !important;
+}

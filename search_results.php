@@ -66,7 +66,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             <?php else: ?>
                 <p>Aucun hôtel trouvé pour votre recherche.</p>
-                <a href="index.php" class="btn btn-primary">Retour à l'accueil</a>
+                <a href="client/login.php" class="btn btn-primary">Retour à l'accueil</a>
             <?php endif; ?>
         </div>
     </div>

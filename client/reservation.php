@@ -17,6 +17,11 @@ if ($id_hotel) {
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Récupération des détails de l'hôtel
+        $stmt = $conn->prepare("SELECT * FROM hotels WHERE id_hotel = :id_hotel");
+        $stmt->bindParam(':id_hotel', $id_hotel);
+        $stmt->execute();
+        $hotel = $stmt->fetch(PDO::FETCH_ASSOC);
+
         // Récupération des chambres disponibles pour l'hôtel
         $stmt = $conn->prepare("SELECT DISTINCT type_chambre, prix, id_chambre FROM chambres WHERE id_hotel = :id_hotel AND disponibilite = TRUE GROUP BY type_chambre ");
         $stmt->bindParam(':id_hotel', $id_hotel);
@@ -106,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -113,12 +119,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation</title>
-    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/reservation.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container mt-5">
+<div class="center-container">
+    <div class="form-container">
         <h2>Réservation pour <?php echo htmlspecialchars($hotel['nom_hotel'] ?? ''); ?></h2>
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
@@ -160,7 +167,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-primary">Réserver</button>
         </form>
     </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include '../includes/footer.php'; ?>
+    <footer class="bg-dark text-white mt-auto p-4 text-center fixed-bottom" style="width: 100%; bottom: 0;">
+    <p>&copy; 2024 HotelSystem. Tous droits réservés.</p>
+</footer>
 </body>
 </html>

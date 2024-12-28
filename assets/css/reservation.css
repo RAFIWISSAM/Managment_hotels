@@ -1,0 +1,52 @@
+body {
+    background: url('../images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 56px); /* Ajustez la hauteur pour exclure la navbar */
+}
+
+.form-container {
+    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent pour améliorer la lisibilité */
+    border-radius: 10px;
+    padding: 30px;
+    color: white;
+    max-width: 500px; /* Largeur maximale pour limiter l'étirement */
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ajout d'une ombre */
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+}
+
+.form-container:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background-color: #c4a081 !important; /* Blanc cassé */
+    border-color: #c4a081 !important;
+    color: #000 !important;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 1);
+    margin-right: 10px;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05) !important;
+    background-color: #806045 !important; /* Couleur légèrement plus foncée pour l'effet de survol */
+    border-color: #5D4632 !important;
+}
+
+h2 {
+    color: #c4a081;
+    text-align: center;
+}
+
