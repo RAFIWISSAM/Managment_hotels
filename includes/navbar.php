@@ -15,12 +15,12 @@
                     <a class="nav-link" href="../client/my_reservations.php">Mes réservations</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../client/rating.php">Rate Us</a>
+                    <a class="nav-link" href="../client/rating.php">Évaluez-nous</a>
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle"></i> <!-- Icone de profil -->
+                        <i class="fa-solid fa-user"></i> <!-- Icone de profil -->
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#"><?php echo htmlspecialchars($_SESSION['user']['nom']); ?></a></li>

@@ -73,7 +73,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <a class="nav-link" href="client/my_reservations.php">Mes réservations</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="client/rating.php">Rate Us</a>
+                    <a class="nav-link" href="client/rating.php">Évaluez-nous</a>
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">

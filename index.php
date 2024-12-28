@@ -25,11 +25,9 @@ session_start(); // Assurez-vous de démarrer la session
                     <a class="nav-link" href="index.php">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mes réservations</a>
+                    <a class="nav-link" href="client/contact.php">Contactez-nous</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Rate Us</a>
-                </li>
+                
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

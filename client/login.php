@@ -76,10 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a class="nav-link" href="../index.php">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mes réservations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Rate Us</a>
+                    <a class="nav-link" href="contact.php">Contactez-nous</a>
                 </li>
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="nav-item dropdown">
